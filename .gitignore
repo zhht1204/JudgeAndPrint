@@ -2,3 +2,4 @@ lib/
 .idea/
 JudgeAndPrint.iml
 out/
+log/
