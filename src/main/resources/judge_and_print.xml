@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
-    <first-come>true</first-come>
-    <open-office>
-        <home>E:/OpenOffice4</home>
-    </open-office>
+	<first-come>true</first-come>
+	<open-office>
+		<home>E:/OpenOffice4</home>
+	</open-office>
 </configuration>

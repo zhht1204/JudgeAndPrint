@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 public class ConfigIOTest {
-	String configPath;
-	String rootPath;
-	ConfigIO io;
-	Logger logger = LoggerFactory.getLogger(ConfigIOTest.class);
+	private String configPath;
+	private String rootPath;
+	private ConfigIO io;
+	private Logger logger;
 
 	@Before
 	public void setUp() throws Exception {
@@ -20,6 +20,7 @@ public class ConfigIOTest {
 		File configPathFile = new File(configPath);
 		rootPath = configPathFile.getParent();
 		io = new ConfigIO();
+		logger = LoggerFactory.getLogger(ConfigIOTest.class);
 	}
 
 	@After
@@ -27,6 +28,7 @@ public class ConfigIOTest {
 		configPath = null;
 		rootPath = null;
 		io = null;
+		logger = null;
 	}
 
 	@Test

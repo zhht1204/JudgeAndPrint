@@ -57,7 +57,7 @@
             </constraints>
             <properties>
               <editable value="false"/>
-              <text value="欢迎使用文档色彩分析及打印系统&#10;本系统支持的文档格式有：&#10;doc，docx，xls，xlsx，pdf，jpg&#10;基于OpenOffice实现，使用前请先安装并指定OpenOffice位置&#10;（默认安装于E:\OpenOffice4）"/>
+              <text value="欢迎使用文档色彩分析及打印系统&#10;本系统支持的文档格式有：&#10;doc，docx，xls，xlsx，pdf，jpg，png，gif（静态）&#10;基于OpenOffice实现，使用前请先安装并指定OpenOffice位置&#10;（默认安装于E:\OpenOffice4）"/>
             </properties>
           </component>
         </children>
