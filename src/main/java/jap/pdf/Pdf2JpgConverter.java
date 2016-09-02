@@ -1,5 +1,6 @@
 package jap.pdf;
 
+import jap.utils.FileManager;
 import org.icepdf.core.exceptions.PDFException;
 import org.icepdf.core.exceptions.PDFSecurityException;
 import org.icepdf.core.pobjects.Document;
@@ -15,6 +16,11 @@ import java.io.IOException;
 
 public class Pdf2JpgConverter {
 	public void convert(String src, String folder) {
+		File tempFolder = new File(folder);
+		if (tempFolder.exists() && tempFolder.isDirectory()) {
+			FileManager.deleteDir(tempFolder);
+		}
+		tempFolder.mkdir();
 		try {
 			Document document = new Document();
 			document.setFile(src);
@@ -25,8 +31,8 @@ public class Pdf2JpgConverter {
 						(document.getPageImage(i, GraphicsRenderingHints.SCREEN, Page.BOUNDARY_CROPBOX, 0f, 2f));
 				RenderedImage rendImage = image;
 				// capture the page image to file
-				file = new File(folder + "pdfimage" + i + ".image");
-				ImageIO.write(rendImage, "image", file);
+				file = new File(folder + "/pdfimage" + i + ".jpg");
+				ImageIO.write(rendImage, "jpg", file);
 				image.flush();
 			}
 			// clean up resources
@@ -43,8 +49,10 @@ public class Pdf2JpgConverter {
 	}
 
 	public void convert(String src) {
-		String tempFolder = System.getProperty("java.io.tmpdir") + "japTemp/";
-		this.convert(src, tempFolder);
+		String tempFolderString = System.getProperty("java.io.tmpdir") + "japTemp/pdf";
+		new File(System.getProperty("java.io.tmpdir") + "japTemp").mkdir();
+		new File(tempFolderString).mkdir();
+		this.convert(src, tempFolderString);
 	}
 
 }

@@ -1,6 +1,5 @@
 package jap.utils;
 
-import jap.utils.MathFunctions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

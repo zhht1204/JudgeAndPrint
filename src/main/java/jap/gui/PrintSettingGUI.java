@@ -1,7 +1,7 @@
 package jap.gui;
 
-import jap.utils.FileSelector;
 import jap.config.JapConfig;
+import jap.utils.FileSelector;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

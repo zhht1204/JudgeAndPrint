@@ -3,32 +3,60 @@ package jap.image;
 import jap.JudgeDocument;
 import jap.utils.MathFunctions;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
-
 public class JudgeImage extends JudgeDocument {
 
-	private String filePath = null;
-	private int height = 0;
-	private int width = 0;
+	private int height;
+	private int width;
+	private double serious;
+
+	public JudgeImage() {
+		super(null);
+		this.height = 0;
+		this.width = 0;
+		this.serious = 100.0;
+	}
+
+	public JudgeImage(File file) {
+		super(file);
+		this.height = 0;
+		this.width = 0;
+		this.serious = 100.0;
+	}
+
+	public double getSerious() {
+		return serious;
+	}
+
+	public void setSerious(double serious) {
+		this.serious = serious;
+	}
 
 	@Override
 	public void setFile(File file) {
-		this.filePath = file.getPath();
+		if (file != null &&
+				!file.toString().toLowerCase().endsWith(".jpg") &&
+				!file.toString().toLowerCase().endsWith(".gif") &&
+				!file.toString().toLowerCase().endsWith(".png")) {
+			this.showFileFormatErrorPane();
+			this.setFile(null);
+			return;
+		}
+		super.setFile(file);
 	}
 
-	private int[][][] readRGBImage() { //get the 3D array of an RGB image
+	private int[][][] readRGBImage() throws IOException { //get the 3D array of an RGB image
 		//filePath: the path where to load the image
-		File file = new File(filePath);
 		int[][][] result = null;
-		if (!file.exists()) {
-			return result;
+		if (!this.getFile().exists()) {
+			throw new IOException("没有设置要分析的文件");
 		}
 		try {
-			BufferedImage bufImg = ImageIO.read(file);
+			BufferedImage bufImg = ImageIO.read(this.getFile());
 			height = bufImg.getHeight();
 			width = bufImg.getWidth();
 			result = new int[height][width][3];
@@ -54,19 +82,24 @@ public class JudgeImage extends JudgeDocument {
 	 */
 	@Override
 	public boolean[] isColored() {
-		int[][][] IntegerRGB = readRGBImage();        //存储所有点的RGB值
+		int[][][] integerRGB = new int[1][1][1];        //存储所有点的RGB值
+		try {
+			integerRGB = readRGBImage();
+		} catch (IOException ex) {
+			logger.error(ex.getMessage());
+		}
 		double[] DoubleRGB = new double[3];    //存储一个点的RGB值
 		double varRGB;    //存储每一个点的方差
 		int count = 0;
 
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
-				DoubleRGB[0] = IntegerRGB[i][j][0];
-				DoubleRGB[1] = IntegerRGB[i][j][1];
-				DoubleRGB[2] = IntegerRGB[i][j][2];
+				DoubleRGB[0] = integerRGB[i][j][0];
+				DoubleRGB[1] = integerRGB[i][j][1];
+				DoubleRGB[2] = integerRGB[i][j][2];
 				varRGB = MathFunctions.getVariance(DoubleRGB);    //计算一个点的方差
-				//System.out.println(varRGB + " " + count);
-				if (varRGB >= 300.0) {
+				// logger.debug(varRGB + " " + count);
+				if (varRGB >= this.serious) {
 					count++;
 				}
 				if (count > 100) {

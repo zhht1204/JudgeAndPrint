@@ -1,63 +1,59 @@
 package jap.excel;
 
 import jap.JudgeDocument;
-import jap.image.JudgeImage;
+import jap.config.JapConfig;
+import jap.pdf.JudgePdf;
 import jap.pdf.Pdf2JpgConverter;
 import jap.utils.DocumentConverter;
+import jap.utils.FileManager;
 
 import javax.swing.*;
 import java.io.File;
-import java.util.ArrayList;
 
 public class JudgeXls extends JudgeDocument {
-	private File file;
 	private String OPENOFFICE_HOME;
 
+	public JudgeXls() {
+		super();
+		this.OPENOFFICE_HOME = JapConfig.getOpenOfficeHome();
+	}
+
 	public JudgeXls(String filepath) {
-		setFile(new File(filepath));
+		this(new File(filepath));
 	}
 
 	public JudgeXls(File file) {
-		setFile(file);
+		super(file);
+		this.OPENOFFICE_HOME = JapConfig.getOpenOfficeHome();
 	}
 
 	@Override
 	public void setFile(File file) {
-		this.file = file;
-		if (!file.toString().toLowerCase().endsWith(".xls") && !file.toString().toLowerCase().endsWith(".xlsx")) {
-			JOptionPane.showMessageDialog(null, "文件格式错误", "请检查", JOptionPane.ERROR_MESSAGE);
-			this.file = null;
+		if (file != null &&
+				!file.toString().toLowerCase().endsWith(".xls") &&
+				!file.toString().toLowerCase().endsWith(".xlsx")) {
+			this.showFileFormatErrorPane();
+			this.setFile(null);
 			return;
 		}
+		super.setFile(file);
 	}
 
 	@Override
 	public boolean[] isColored() {
 		if (this.OPENOFFICE_HOME != null) {
-			DocumentConverter ptpc = new DocumentConverter();
-			File tempFolder = new File(System.getProperty("java.io.tmpdir") + "japTemp");
-			if (!tempFolder.exists() || !tempFolder.isDirectory()) {
-				tempFolder.mkdir();
+			File tempFolder = new File(System.getProperty("java.io.tmpdir") + "japTemp/xls");
+			if (tempFolder.exists() && tempFolder.isDirectory()) {
+				FileManager.deleteDir(tempFolder);
 			}
-			ptpc.convert(file, new File(tempFolder.getPath() + "/temp.pdf"));
+			new File(System.getProperty("java.io.tmpdir") + "japTemp").mkdir();
+			tempFolder.mkdir();
+			DocumentConverter ptpc = new DocumentConverter();
+			ptpc.convert(this.getFile(), new File(tempFolder.getPath() + "/temp.pdf"));
 			Pdf2JpgConverter conv = new Pdf2JpgConverter();
 			conv.convert(tempFolder.getPath() + "/temp.pdf");
-			ArrayList<Boolean> resultList = new ArrayList<Boolean>();
-			int count = 0;
-			File jpgFile = new File(tempFolder.getPath() + "/pdfimage" + count + ".image");
-			JudgeImage jjpg = new JudgeImage();
-			while (jpgFile.exists()) {
-				jjpg.setFile(jpgFile);
-				resultList.add(jjpg.isColored()[0]);
-				count++;
-				jpgFile = new File(tempFolder.getPath() + "/pdfimage" + count + ".image");
-			}
-			boolean[] result = new boolean[resultList.size()];
-			for (count = 0; count < resultList.size(); count++) {
-				result[count] = resultList.get(count);
-			}
-			tempFolder.deleteOnExit();
-			return result;
+			JudgePdf jpdf = new JudgePdf(new File(tempFolder.getPath() + "/temp.pdf"));
+			return jpdf.isColored();
 		} else {
 			return null;
 		}
@@ -73,7 +69,7 @@ public class JudgeXls extends JudgeDocument {
 			File file = chooser.getSelectedFile();
 			this.OPENOFFICE_HOME = file.getAbsolutePath();
 		} else {
-			this.OPENOFFICE_HOME = "E:/OpenOffice 4";
+			this.OPENOFFICE_HOME = JapConfig.getOpenOfficeHome();
 		}
 	}
 

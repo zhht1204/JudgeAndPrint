@@ -4,8 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 
 public class ImagePrinterTest {
 	ImagePrinter ip;
@@ -25,7 +23,8 @@ public class ImagePrinterTest {
 		ip.drawImage(new String[]{
 				ImagePrinterTest.class.getClassLoader().getResource("test1.jpg").getFile(),
 				ImagePrinterTest.class.getClassLoader().getResource("test2.jpg").getFile(),
-				ImagePrinterTest.class.getClassLoader().getResource("test3.jpg").getFile()
+				ImagePrinterTest.class.getClassLoader().getResource("test3.jpg").getFile(),
+				ImagePrinterTest.class.getClassLoader().getResource("test4.jpg").getFile()
 		});
 	}
 

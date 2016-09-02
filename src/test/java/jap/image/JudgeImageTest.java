@@ -1,12 +1,14 @@
 package jap.image;
 
+import jap.AbstractTest;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 
-public class JudgeImageTest {
+public class JudgeImageTest extends AbstractTest {
 	JudgeImage judgeJpg;
 
 	@Before
@@ -29,13 +31,23 @@ public class JudgeImageTest {
 					JudgeImageTest.class.getClassLoader().getResource("test3.jpg").getFile(),
 					JudgeImageTest.class.getClassLoader().getResource("test4.jpg").getFile()
 			};
-			for (String testImage : testImages) {
-				System.out.print(testImage + "\t\t是彩色图片吗\t\t");
-				judgeJpg.setFile(new File(testImage));
-				System.out.println(judgeJpg.isColored()[0]);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			judgeJpg.setFile(new File(testImages[0]));
+			logger.debug("[" + testImages[0] + "]是彩色图片吗：" + judgeJpg.isColored()[0]);
+			Assert.assertTrue(judgeJpg.isColored()[0]);
+
+			judgeJpg.setFile(new File(testImages[1]));
+			logger.debug("[" + testImages[1] + "]是彩色图片吗：" + judgeJpg.isColored()[0]);
+			Assert.assertFalse(judgeJpg.isColored()[0]);
+
+			judgeJpg.setFile(new File(testImages[2]));
+			logger.debug("[" + testImages[2] + "]是彩色图片吗：" + judgeJpg.isColored()[0]);
+			Assert.assertTrue(judgeJpg.isColored()[0]);
+
+			judgeJpg.setFile(new File(testImages[3]));
+			logger.debug("[" + testImages[3] + "]是彩色图片吗：" + judgeJpg.isColored()[0]);
+			Assert.assertFalse(judgeJpg.isColored()[0]);
+		} catch (Exception ex) {
+			logger.error(ex.getClass().getName() + "：" + ex.getMessage());
 		}
 	}
 }
