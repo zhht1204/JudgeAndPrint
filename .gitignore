@@ -1,5 +1,5 @@
 lib/
 .idea/
 JudgeAndPrint.iml
-out/
-log/
+target/
+logs/

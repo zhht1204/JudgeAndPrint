@@ -11,7 +11,7 @@ public class Pdf2JpgConverterTest extends AbstractTest {
 	@Before
 	public void setUp() {
 		this.converter = new Pdf2JpgConverter();
-		System.out.println(System.getProperty("java.io.tmpdir"));
+		logger.debug(System.getProperty("java.io.tmpdir"));
 	}
 
 	@After

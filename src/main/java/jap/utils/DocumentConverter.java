@@ -21,9 +21,9 @@ public class DocumentConverter {
 		} else {
 			DefaultOfficeManagerConfiguration config = new DefaultOfficeManagerConfiguration();
 			try {
-				config.setOfficeHome(openOfficeHome);
+				config.setOfficeHome(new File(this.openOfficeHome));
 			} catch (IllegalArgumentException ex) {
-				JOptionPane.showMessageDialog(null, "未指定OpenOffice，请检查", "需要OpenOffice", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "OpenOffice路径错误，请检查", "需要OpenOffice", JOptionPane.ERROR_MESSAGE);
 			}
 			config.setPortNumber(8100);
 

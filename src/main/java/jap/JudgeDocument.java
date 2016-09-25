@@ -18,6 +18,10 @@ public abstract class JudgeDocument {
 		this.setFile(file);
 	}
 
+	public static void showFileFormatErrorPane() {
+		JOptionPane.showMessageDialog(null, "文件格式错误", "请检查", JOptionPane.ERROR_MESSAGE);
+	}
+
 	abstract public boolean[] isColored();
 
 	public File getFile() {
@@ -26,9 +30,5 @@ public abstract class JudgeDocument {
 
 	public void setFile(File file) {
 		this.file = file;
-	}
-
-	public void showFileFormatErrorPane() {
-		JOptionPane.showMessageDialog(null, "文件格式错误", "请检查", JOptionPane.ERROR_MESSAGE);
 	}
 }

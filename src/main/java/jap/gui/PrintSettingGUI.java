@@ -43,7 +43,6 @@ public class PrintSettingGUI {
 		frame.pack();
 		frame.setVisible(true);
 		selectFileButton.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				File file = FileSelector.selectAppropriateFile();
 				if (file != null) {
@@ -58,21 +57,33 @@ public class PrintSettingGUI {
 			tempFolder.mkdir();
 		}
 		printButton.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (filePathTextField.getText() == null || filePathTextField.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "请选择要打印的文件", "错误", JOptionPane.ERROR_MESSAGE);
-				} else if ("".equals(JapConfig.getOpenOfficeHome())) {
-					JOptionPane.showMessageDialog(null, "请选择OpenOffice的安装路径", "错误", JOptionPane.ERROR_MESSAGE);
+				if (previewCheckBox.isSelected()) {
+					showPrintPreview();
 				} else {
-
+					print();
 				}
 			}
 		});
 	}
 
-	public static void main(String[] args) {
-		PrintSettingGUI gui = new PrintSettingGUI();
+	/**
+	 * 打印选取的内容
+	 */
+	private void print() {
+
+	}
+
+	/**
+	 * 显示打印预览
+	 */
+	private void showPrintPreview() {
+		JFrame frame = new JFrame("预览");
+		PreviewWindow previewWindow = new PreviewWindow(new File(this.filePathTextField.getText()));
+		frame.setContentPane(previewWindow.getPreviewPanel());
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.pack();
+		frame.setVisible(true);
 	}
 
 	private void buildUpMenuBar() {
@@ -97,7 +108,6 @@ public class PrintSettingGUI {
 				(JapConfig.getOpenOfficeHome().substring(0, 5) + "...") : JapConfig.getOpenOfficeHome())
 		) + "）");
 		selectOpenOfficeMenuItem.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
 				chooser.setDialogTitle("请选择OpenOffice的安装路径");
@@ -120,7 +130,6 @@ public class PrintSettingGUI {
 		quitMenuItem = new JMenuItem("退出");
 		fileMenu.add(quitMenuItem);
 		quitMenuItem.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 			}
