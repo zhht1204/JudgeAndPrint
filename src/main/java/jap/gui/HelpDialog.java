@@ -10,6 +10,7 @@ public class HelpDialog extends JDialog {
 	private JTextPane helpTextPane;
 	private JPanel bottomPanel;
 	private JPanel contentPanel;
+	private JScrollPane scrollPane;
 	private JLabel helpLabel;
 
 	public HelpDialog() {
@@ -25,7 +26,6 @@ public class HelpDialog extends JDialog {
 		});
 
 
-// call onCancel() when cross is clicked
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -55,6 +55,6 @@ public class HelpDialog extends JDialog {
 	}
 
 	private void onOK() {
-		dispose();
+		this.setVisible(false);
 	}
 }

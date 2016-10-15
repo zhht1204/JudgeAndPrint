@@ -49,8 +49,9 @@ public class FileSelector {
 
 	public static File selectAppropriateFile() {
 		JFileChooser chooser = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("doc", "docx", "xls", "xlsx", "pdf",
-				"src/main/jap/image");
+		FileNameExtensionFilter filter =
+				new FileNameExtensionFilter("jpg，gif，png，doc，docx，xls，xlsx，pdf",
+						"jpg", "gif", "png", "doc", "docx", "xls", "xlsx", "pdf");
 		chooser.setFileFilter(filter);
 		chooser.setMultiSelectionEnabled(false);
 		int returnVal = chooser.showOpenDialog(null);

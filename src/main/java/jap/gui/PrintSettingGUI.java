@@ -67,6 +67,10 @@ public class PrintSettingGUI {
 		});
 	}
 
+	public static void main(String[] args) {
+		PrintSettingGUI gui = new PrintSettingGUI();
+	}
+
 	/**
 	 * 打印选取的内容
 	 */
@@ -78,12 +82,7 @@ public class PrintSettingGUI {
 	 * 显示打印预览
 	 */
 	private void showPrintPreview() {
-		JFrame frame = new JFrame("预览");
-		PreviewWindow previewWindow = new PreviewWindow(new File(this.filePathTextField.getText()));
-		frame.setContentPane(previewWindow.getPreviewPanel());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
+		PreviewGUI previewGUI = new PreviewGUI(this.filePathTextField.getText());
 	}
 
 	private void buildUpMenuBar() {
