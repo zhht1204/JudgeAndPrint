@@ -23,16 +23,72 @@ public class PreviewGUI {
 	private JButton nextButton;
 	private JButton printButton;
 	private PicturePanel picturePanel;
+	private JLabel pageNumberLabel;
 
 	private JudgeDocument judgeDocument;
 	private File file;
+	private boolean[] isColored;
 
 	public PreviewGUI() {
 	}
 
 	public PreviewGUI(File file) {
 		this.file = file;
-		String lowerCaseFilePath = file.getAbsolutePath().toLowerCase();
+
+		this.frame = new JFrame("预览");
+
+		this.cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.setVisible(false);
+			}
+		});
+		this.previousButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				picturePanel.previousPage();
+			}
+		});
+		this.nextButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				picturePanel.nextPage();
+			}
+		});
+
+		if (this.judgeDocument != null) {
+			if (this.isColored != null &&
+					!(this.judgeDocument.getFile().getAbsolutePath().toLowerCase().endsWith("jpg") ||
+							this.judgeDocument.getFile().getAbsolutePath().toLowerCase().endsWith("png") ||
+							this.judgeDocument.getFile().getAbsolutePath().toLowerCase().endsWith("gif"))) {
+				String tempFileString = System.getProperty("java.io.tmpdir") + "japTemp/pdf/pdfimage1.jpg";
+				File nextImageFile = new File(tempFileString);
+				if (nextImageFile.exists()) {
+					nextButton.setEnabled(true);
+				}
+			}
+
+			this.frame.setContentPane(this.previewPanel);
+			this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			this.frame.pack();
+			this.frame.setVisible(true);
+		}
+	}
+
+	public PreviewGUI(String filepath) {
+		this(new File(filepath));
+	}
+
+	// 测试用
+	public static void main(String[] args) {
+		PreviewGUI gui = new PreviewGUI("F:/test.jpg");
+	}
+
+	public JPanel getPreviewPanel() {
+		return this.previewPanel;
+	}
+
+	private void createUIComponents() {
+		String lowerCaseFilePath = this.file.getAbsolutePath().toLowerCase();
 		try {
 			if (lowerCaseFilePath.endsWith("pdf")) {
 				judgeDocument = new JudgePdf(file);
@@ -51,39 +107,12 @@ public class PreviewGUI {
 			frame.setVisible(false);
 			return;
 		}
-		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				previewPanel.getComponent(0).setVisible(false);
-			}
-		});
-		nextButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				picturePanel.nextPage();
-			}
-		});
-		this.frame = new JFrame("预览");
-		frame.setContentPane(this.previewPanel);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
-	}
-
-	public PreviewGUI(String filepath) {
-		this(new File(filepath));
-	}
-
-	// 测试用
-	public static void main(String[] args) {
-		PreviewGUI gui = new PreviewGUI("F:/test.jpg");
-	}
-
-	public JPanel getPreviewPanel() {
-		return previewPanel;
-	}
-
-	private void createUIComponents() {
+		this.isColored = judgeDocument.isColored();
 		this.picturePanel = new PicturePanel();
+		pageNumberLabel = new JLabel();
+		pageNumberLabel
+				.setText("第1 / " + picturePanel.getPagination() + "页（" +
+						(isColored[picturePanel.getPageNo() - 1] ? "彩色" : "黑白") + "）");
 	}
 
 	public class PicturePanel extends JPanel {
@@ -96,55 +125,75 @@ public class PreviewGUI {
 			pageNo = 1;
 			pagination = 1;
 			if (judgeDocument != null) {
-				pagination = judgeDocument.isColored().length;
+				pagination = isColored.length;
 			}
 		}
 
 		@Override
 		public void paint(Graphics g) {
-			Image picture = new ImageIcon(judgeDocument.getFile().getAbsolutePath()).getImage();
-			this.setSize(picture.getWidth(null), picture.getHeight(null));
+			g.clearRect(0, 0, 500, 780);
+			String imageFileString = "";
+			if (judgeDocument.getFile().getAbsolutePath().toLowerCase().endsWith("jpg") ||
+					judgeDocument.getFile().getAbsolutePath().toLowerCase().endsWith("png") ||
+					judgeDocument.getFile().getAbsolutePath().toLowerCase().endsWith("gif")) {
+				imageFileString = judgeDocument.getFile().getAbsolutePath();
+			} else {
+				imageFileString =
+						System.getProperty("java.io.tmpdir") + "japTemp/pdf/pdfimage" + (pageNo - 1) + ".jpg";
+			}
+			File imageFile = new File(imageFileString);
+			Image picture = new ImageIcon(imageFile.getAbsolutePath()).getImage();
+			this.setSize(500, 780);
 			g.drawImage(picture, 0, 0, 500, 780, this);
 			super.paint(g);
-		}
-
-		@Override
-		public void repaint() {
-			if (picturePanel != null) {
-				File previousImageFile = new File(
-						System.getProperty("java.io.tmpdir") + "japTemp/pdf/pdfimage" + (picturePanel.getPageNo() - 1) +
-								".jpg");
-				File nextImageFile = new File(
-						System.getProperty("java.io.tmpdir") + "japTemp/pdf/pdfimage" + (picturePanel.getPageNo() + 1) +
-								".jpg");
-				if (previousImageFile.exists()) {
-					previousButton.setEnabled(true);
-				} else {
-					previousButton.setEnabled(false);
-				}
-				if (nextImageFile.exists()) {
-					nextButton.setEnabled(true);
-				} else {
-					nextButton.setEnabled(false);
-				}
-			}
-			super.repaint();
 		}
 
 		public int getPageNo() {
 			return this.pageNo;
 		}
 
-		public void nextPage() {
-			// TODO
-			File imageFile = judgeDocument.getFile();
-			int index = imageFile.getAbsolutePath().indexOf("pdfimage");
-			System.out.println(imageFile.getAbsolutePath().charAt(index + 8));
-			pageNo++;
+		public int getPagination() {
+			return this.pagination;
 		}
 
 		public void previousPage() {
-			// TODO
+			String previousFileString =
+					System.getProperty("java.io.tmpdir") + "japTemp/pdf/pdfimage" + (pageNo - 2) + ".jpg";
+			File previousFile = new File(previousFileString);
+			if (previousFile.exists()) {
+				pageNo--;
+				repaint();
+				nextButton.setEnabled(true);
+				pageNumberLabel.setText("第" + this.pageNo + " / " + this.pagination + "页（" +
+						(isColored[picturePanel.getPageNo() - 1] ? "彩色" : "黑白") + "）");
+				previousFileString =
+						System.getProperty("java.io.tmpdir") + "japTemp/pdf/pdfimage" + (pageNo - 2) + ".jpg";
+				if (new File(previousFileString).exists()) {
+					previousButton.setEnabled(true);
+				} else {
+					previousButton.setEnabled(false);
+				}
+			}
 		}
+
+		public void nextPage() {
+			String nextFileString =
+					System.getProperty("java.io.tmpdir") + "japTemp/pdf/pdfimage" + pageNo + ".jpg";
+			File nextFile = new File(nextFileString);
+			if (nextFile.exists()) {
+				pageNo++;
+				repaint();
+				previousButton.setEnabled(true);
+				pageNumberLabel.setText("第" + this.pageNo + " / " + this.pagination + "页（" +
+						(isColored[picturePanel.getPageNo() - 1] ? "彩色" : "黑白") + "）");
+				nextFileString = System.getProperty("java.io.tmpdir") + "japTemp/pdf/pdfimage" + pageNo + ".jpg";
+				if (new File(nextFileString).exists()) {
+					nextButton.setEnabled(true);
+				} else {
+					nextButton.setEnabled(false);
+				}
+			}
+		}
+
 	}
 }
