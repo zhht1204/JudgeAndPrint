@@ -17,8 +17,8 @@ public class ConfigIO {
 	String confFilePath;
 
 	public ConfigIO() {
-		confFilePath = ConfigIO.class.getClassLoader().getResource("judge_and_print.xml").getFile();
-		PropertyConfigurator.configure(ConfigIO.class.getClassLoader().getResource("log4j.properties").getFile());
+		confFilePath = "judge_and_print.xml";
+		PropertyConfigurator.configure(confFilePath);
 	}
 
 	public void writeContent(String nodePosition, String value) {
@@ -35,12 +35,11 @@ public class ConfigIO {
 			Document document = DocumentHelper.parseText(builder.toString());
 			Element rootElement = document.getRootElement();
 			Element targetElement = rootElement;
-			if (nodePositions.length > 1) {
-				if ("".equals(nodePositions[0])) {
-					nodePositions[0] = "configuration";
-				}
-				for (String node : nodePositions) {
-					targetElement = targetElement.element(node);
+			if (nodePositions.length >= 1) {
+				if (!"".equals(nodePositions[0])) {
+					for (String node : nodePositions) {
+						targetElement = targetElement.element(node);
+					}
 				}
 			}
 			targetElement.setText(value);

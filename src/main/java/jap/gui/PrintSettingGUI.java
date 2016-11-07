@@ -1,7 +1,12 @@
 package jap.gui;
 
+import jap.JudgeDocument;
 import jap.config.JapConfig;
+import jap.excel.JudgeXls;
+import jap.pdf.JudgePdf;
+import jap.print.ImagePrinter;
 import jap.utils.FileSelector;
+import jap.word.JudgeDoc;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -9,6 +14,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PrintSettingGUI {
 	JFrame frame;
@@ -75,7 +82,47 @@ public class PrintSettingGUI {
 	 * 打印选取的内容
 	 */
 	private void print() {
+		File file = new File(filePathTextField.getText());
+		if (file.exists() && file.canRead()) {
+			if (file.getAbsolutePath().toLowerCase().endsWith("jpg") ||
+					file.getAbsolutePath().toLowerCase().endsWith("gif") ||
+					file.getAbsolutePath().toLowerCase().endsWith("png")) {
+				ImagePrinter.drawImage(new String[]{file.getAbsolutePath()});
+			} else {
+				String lowerCaseFilePath = file.getAbsolutePath().toLowerCase();
+				JudgeDocument judgeDocument;
+				if (lowerCaseFilePath.endsWith("pdf")) {
+					judgeDocument = new JudgePdf(file);
+				} else if (lowerCaseFilePath.endsWith("doc") || lowerCaseFilePath.endsWith("docx")) {
+					judgeDocument = new JudgeDoc(file);
+				} else if (lowerCaseFilePath.endsWith("xls") || lowerCaseFilePath.endsWith("xlsx")) {
+					judgeDocument = new JudgeXls(file);
+				} else {
+					JOptionPane.showMessageDialog(null, "文件格式错误", "错误", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				boolean[] isColored = judgeDocument.isColored();
+				String imageFileString =
+						System.getProperty("java.io.tmpdir") + "japTemp/pdf/pdfimage";
+				List<String> bwFiles = new ArrayList<>();
+				List<String> colorFiles = new ArrayList<>();
+				for (int i = 0; i < isColored.length; i++) {
+					if (isColored[i]) {
+						colorFiles.add(imageFileString + i + ".jpg");
+					} else {
+						bwFiles.add(imageFileString + i + ".jpg");
+					}
+				}
 
+				JOptionPane.showMessageDialog(null, "请选择【黑白】文件使用的打印机", "请选择", JOptionPane.INFORMATION_MESSAGE);
+				ImagePrinter.drawImage(bwFiles);
+				JOptionPane.showMessageDialog(null, "请选择【彩色】文件使用的打印机", "请选择", JOptionPane.INFORMATION_MESSAGE);
+				ImagePrinter.drawImage(colorFiles);
+
+			}
+		} else {
+			JOptionPane.showMessageDialog(null, "文件读取错误，请检查", "错误", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	/**

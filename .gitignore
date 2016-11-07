@@ -3,3 +3,7 @@ lib/
 JudgeAndPrint.iml
 target/
 logs/
+out/
+META-INF/
+/judge_and_print.xml
+/log4j.properties

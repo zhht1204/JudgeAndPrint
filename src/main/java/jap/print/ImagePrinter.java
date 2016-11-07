@@ -6,12 +6,13 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class ImagePrinter {
 	/**
 	 * @param filePaths 图片路径数组
 	 */
-	public void drawImage(String[] filePaths) {
+	public static void drawImage(String[] filePaths) {
 		try {
 			DocFlavor dof = null;
 			// 根据用户选择不同的图片格式获得不同的打印设备
@@ -24,7 +25,7 @@ public class ImagePrinter {
 			}
 			if (dof != null) {
 				// 字节流获取图片信息
-				FileInputStream fis = new FileInputStream(filePaths[0]);
+				FileInputStream fis;
 				// 获得打印属性
 				PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 				// 每一次默认打印一页
@@ -39,10 +40,10 @@ public class ImagePrinter {
 				// 获取第一个打印机
 				PrintService ps = pss[0];
 				// 获得打印工作
-				DocPrintJob job = ps.createPrintJob();
+				DocPrintJob job;
 
 				// 设置打印内容
-				Doc doc = new SimpleDoc(fis, dof, null);
+				Doc doc;
 				// 出现设置对话框
 				PrintService service = ServiceUI.printDialog(null, 50, 50, pss, ps, dof, pras);
 
@@ -69,6 +70,20 @@ public class ImagePrinter {
 			pe.printStackTrace();
 		}
 
+	}
+
+	public static void drawImage(List<String> fileList) {
+		String[] result = new String[fileList.size()];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = fileList.get(i);
+		}
+		drawImage(result);
+	}
+
+	public static void main(String[] args) {
+		ImagePrinter ip = new ImagePrinter();
+		ip.drawImage(new String[]{"E:\\NutstoreSpace\\project\\JudgeAndPrint\\src\\test\\test_resources\\test1.jpg",
+				"E:\\NutstoreSpace\\project\\JudgeAndPrint\\src\\test\\test_resources\\test2.jpg"});
 	}
 
 }

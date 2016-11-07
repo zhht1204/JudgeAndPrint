@@ -42,4 +42,16 @@ public class ConfigIOTest {
 		logger.info(content);
 	}
 
+	@Test
+	public void isFirstReadTest() {
+		logger.info(io.readContent("first-come"));
+	}
+
+	@Test
+	public void isFirstWriteTest() {
+		io.writeContent("first-come", "false");
+		logger.info(io.readContent("first-come"));
+		assert !Boolean.valueOf(io.readContent("first-come"));
+	}
+
 }
