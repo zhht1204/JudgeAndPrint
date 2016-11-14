@@ -74,7 +74,6 @@ public class PreviewGUI {
 							JOptionPane.showMessageDialog(null, "文件格式错误", "错误", JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-						boolean[] isColored = judgeDocument.isColored();
 						String imageFileString =
 								System.getProperty("java.io.tmpdir") + "japTemp/pdf/pdfimage";
 						java.util.List<String> bwFiles = new ArrayList<>();
@@ -86,12 +85,16 @@ public class PreviewGUI {
 								bwFiles.add(imageFileString + i + ".jpg");
 							}
 						}
-
-						JOptionPane.showMessageDialog(null, "请选择【黑白】文件使用的打印机", "请选择", JOptionPane.INFORMATION_MESSAGE);
-						ImagePrinter.drawImage(bwFiles);
-						JOptionPane.showMessageDialog(null, "请选择【彩色】文件使用的打印机", "请选择", JOptionPane.INFORMATION_MESSAGE);
-						ImagePrinter.drawImage(colorFiles);
-
+						if (bwFiles.size() >= 0) {
+							JOptionPane
+									.showMessageDialog(null, "请选择【黑白】文件使用的打印机", "请选择", JOptionPane.INFORMATION_MESSAGE);
+							ImagePrinter.drawImage(bwFiles);
+						}
+						if (colorFiles.size() >= 0) {
+							JOptionPane
+									.showMessageDialog(null, "请选择【彩色】文件使用的打印机", "请选择", JOptionPane.INFORMATION_MESSAGE);
+							ImagePrinter.drawImage(colorFiles);
+						}
 					}
 				} else {
 					JOptionPane.showMessageDialog(null, "文件读取错误，请检查", "错误", JOptionPane.ERROR_MESSAGE);

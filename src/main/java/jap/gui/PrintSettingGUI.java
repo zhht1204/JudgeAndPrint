@@ -114,10 +114,16 @@ public class PrintSettingGUI {
 					}
 				}
 
-				JOptionPane.showMessageDialog(null, "请选择【黑白】文件使用的打印机", "请选择", JOptionPane.INFORMATION_MESSAGE);
-				ImagePrinter.drawImage(bwFiles);
-				JOptionPane.showMessageDialog(null, "请选择【彩色】文件使用的打印机", "请选择", JOptionPane.INFORMATION_MESSAGE);
-				ImagePrinter.drawImage(colorFiles);
+				if (bwFiles.size() >= 0) {
+					JOptionPane
+							.showMessageDialog(null, "请选择【黑白】文件使用的打印机", "请选择", JOptionPane.INFORMATION_MESSAGE);
+					ImagePrinter.drawImage(bwFiles);
+				}
+				if (colorFiles.size() >= 0) {
+					JOptionPane
+							.showMessageDialog(null, "请选择【彩色】文件使用的打印机", "请选择", JOptionPane.INFORMATION_MESSAGE);
+					ImagePrinter.drawImage(colorFiles);
+				}
 
 			}
 		} else {
