@@ -153,6 +153,15 @@ public class PrintSettingGUI {
 			}
 		});
 		openFileMenuItem = new JMenuItem("打开文件");
+		openFileMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				File file = FileSelector.selectAppropriateFile();
+				if (file != null) {
+					filePathTextField.setText(file.toString());
+				}
+			}
+		});
 		fileMenu.add(openFileMenuItem);
 		selectOpenOfficeMenuItem = new JMenuItem("选择OpenOffice路径（"
 				+ (JapConfig.getOpenOfficeHome().equals("") ?
